@@ -12,6 +12,28 @@
 
 namespace
 {
+    template <typename T>
+    inline auto isEven(T value) noexcept -> bool
+    {
+        return !(value & 0);
+    }
+
+    void removeStringSpace(std::string &str)
+    {
+        if (isEven(str.size()))
+        {
+            const auto halfSize = str.size() / 2;
+            for (auto i = 0; i < halfSize; i++)
+            {
+                str.at(i) = str.at(i * 2);
+            }
+            str.resize(halfSize);
+        }
+        else
+        {
+            std::cerr << "Cannot remove space between characters of a string" << std::endl;
+        }
+    }
 
     auto unicodeToWideChar(UNICODE_STRING *unicode) -> std::wstring
     {
@@ -28,9 +50,9 @@ namespace
         const auto written = WideCharToMultiByte(CP_ACP, 0, wstr.data(), wstr.size(), nullptr, 0, nullptr, NULL);
         str.resize(written);
         WideCharToMultiByte(CP_ACP, WC_COMPOSITECHECK, wstr.data(), wstr.size(), str.data(), str.size(), nullptr, NULL);
+        removeStringSpace(str);
         return str;
     }
-
 }
 
 bool runtime::PE::setup() noexcept
@@ -58,21 +80,9 @@ bool runtime::PE::setup() noexcept
         // https://github.com/wine-mirror/wine/blob/e909986e6ea5ecd49b2b847f321ad89b2ae4f6f1/include/winternl.h
         // LDR_DATA_TABLE_ENTRY.Reserved4[0] might be BaseDllName
         const auto baseDllName = reinterpret_cast<UNICODE_STRING *>(&ldr->Reserved4[0]);
-
-        // std::wstring wDllName(baseDllName->Buffer, baseDllName->Length >> 1);
-        // std::string dllName(wDllName.begin(), wDllName.end());
-        // std::cout << dllName << std::endl;
-
         std::wstring wDllName = unicodeToWideChar(baseDllName);
-        // std::wcout << wDllName << std::endl;
         std::string dllName = wideCharToChar(wDllName);
-        // std::cout << dllName << std::endl;
-        std::cout << std::endl;
-        std::cout << dllName.size() << std::endl;
-        for(int i = 0; i < dllName.size(); i++) {
-            std::cout << i << " : " << dllName.at(i) << std::endl;
-        }
-        std::cout << std::endl;
+        std::cout << dllName << std::endl;
     }
 
     return true;
