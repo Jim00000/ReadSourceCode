@@ -71,6 +71,20 @@ HRESULT GetExtendedVMExits(WHV_EXTENDED_VM_EXITS &ExtendedVmExits)
     return S_OK;
 }
 
+HRESULT GetProcessorFeatures(WHV_PROCESSOR_FEATURES &ProcessorFeatures)
+{
+    UINT32 WrittenSizeInBytes = 0;
+    HRESULT Status = WHvGetCapability(WHvCapabilityCodeProcessorFeatures,
+                                      &ProcessorFeatures, sizeof(ProcessorFeatures), &WrittenSizeInBytes);
+    if (Status != S_OK)
+    {
+        CheckLastError();
+        return S_FALSE;
+    }
+
+    return S_OK;
+}
+
 HRESULT CheckHyperVCapability()
 {
     /*
@@ -99,10 +113,14 @@ HRESULT CheckHyperVCapability()
     */
     WHV_EXTENDED_VM_EXITS ExtendedVmExits;
 
+    /* processor's features */
+    WHV_PROCESSOR_FEATURES ProcessorFeatures;
+
     if (IsHypervisorPresent)
     {
         GetHyperVFeatures(Features);
         GetExtendedVMExits(ExtendedVmExits);
+        GetProcessorFeatures(ProcessorFeatures);
     }
 
     return S_OK;
