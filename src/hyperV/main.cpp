@@ -9,10 +9,8 @@
 #endif
 
 #include <string>
-
 #include <Windows.h>
 #include <WinHvPlatform.h>
-
 #include "spdlog/spdlog.h"
 
 #pragma comment(lib, "WinHvPlatform.lib")
@@ -184,23 +182,26 @@ CheckHyperVCapability()
     */
     WHV_PROCESSOR_XSAVE_FEATURES ProcessorXSaveFeature;
 
-    if (IsHypervisorPresent)
+    if (IsHypervisorPresent == FALSE)
     {
-        /* Capabilities of the API implementation */
-        GetHyperVFeatures(Features);
-        GetExtendedVMExits(ExtendedVmExits);
-
-        /* Capabilities of the system's processor */
-        GetProcessorVednors(Vendors);
-        GetProcessorFeatures(ProcessorFeatures);
-        GetProcessorXsaveFeatures(ProcessorXSaveFeature);
+        return S_FALSE;
     }
+
+    /* Capabilities of the API implementation */
+    GetHyperVFeatures(Features);
+    GetExtendedVMExits(ExtendedVmExits);
+
+    /* Capabilities of the system's processor */
+    GetProcessorVednors(Vendors);
+    GetProcessorFeatures(ProcessorFeatures);
+    GetProcessorXsaveFeatures(ProcessorXSaveFeature);
 
     return S_OK;
 }
 
 INT WINAPI
 main(INT argc, PCHAR argv[], PCHAR envp[])
+try
 {
     spdlog::info("----- RSC Project : learn HyperVisor -----");
 
@@ -213,5 +214,10 @@ main(INT argc, PCHAR argv[], PCHAR envp[])
         return EXIT_SUCCESS;
     };
 
+    spdlog::info("Hyper-V is present");
+    spdlog::info("----- Program terminates -----");
     return EXIT_SUCCESS;
+}
+catch (...)
+{
 }
