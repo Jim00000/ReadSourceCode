@@ -10,7 +10,8 @@
 
 #pragma comment(lib, "WinHvPlatform.lib")
 
-VOID CheckLastError()
+VOID WINAPI
+CheckLastError()
 {
     LPSTR MsgBuf;
 
@@ -28,7 +29,8 @@ VOID CheckLastError()
     LocalFree(MsgBuf);
 }
 
-BOOL CheckHyperVPresent()
+BOOL WINAPI
+CheckHyperVPresent()
 {
     BOOL HypervisorPresent = FALSE;
     UINT32 WrittenSizeInBytes = 0;
@@ -44,7 +46,8 @@ BOOL CheckHyperVPresent()
     return HypervisorPresent;
 }
 
-HRESULT GetHyperVFeatures(WHV_CAPABILITY_FEATURES &Features)
+HRESULT WINAPI
+GetHyperVFeatures(_Out_ WHV_CAPABILITY_FEATURES &Features)
 {
     UINT32 WrittenSizeInBytes = 0;
     HRESULT Status = WHvGetCapability(WHvCapabilityCodeFeatures,
@@ -58,7 +61,8 @@ HRESULT GetHyperVFeatures(WHV_CAPABILITY_FEATURES &Features)
     return S_OK;
 }
 
-HRESULT GetExtendedVMExits(WHV_EXTENDED_VM_EXITS &ExtendedVmExits)
+HRESULT WINAPI
+GetExtendedVMExits(_Out_ WHV_EXTENDED_VM_EXITS &ExtendedVmExits)
 {
     UINT32 WrittenSizeInBytes = 0;
     HRESULT Status = WHvGetCapability(WHvCapabilityCodeExtendedVmExits,
@@ -72,7 +76,8 @@ HRESULT GetExtendedVMExits(WHV_EXTENDED_VM_EXITS &ExtendedVmExits)
     return S_OK;
 }
 
-HRESULT GetProcessorFeatures(WHV_PROCESSOR_FEATURES &ProcessorFeatures)
+HRESULT WINAPI
+GetProcessorFeatures(_Out_ WHV_PROCESSOR_FEATURES &ProcessorFeatures)
 {
     UINT32 WrittenSizeInBytes = 0;
     HRESULT Status = WHvGetCapability(WHvCapabilityCodeProcessorFeatures,
@@ -86,7 +91,8 @@ HRESULT GetProcessorFeatures(WHV_PROCESSOR_FEATURES &ProcessorFeatures)
     return S_OK;
 }
 
-HRESULT GetProcessorXsaveFeatures(WHV_PROCESSOR_XSAVE_FEATURES &ProcessorXSaveFeature)
+HRESULT WINAPI
+GetProcessorXsaveFeatures(_Out_ WHV_PROCESSOR_XSAVE_FEATURES &ProcessorXSaveFeature)
 {
     UINT32 WrittenSizeInBytes = 0;
     HRESULT Status = WHvGetCapability(WHvCapabilityCodeProcessorXsaveFeatures,
@@ -100,7 +106,8 @@ HRESULT GetProcessorXsaveFeatures(WHV_PROCESSOR_XSAVE_FEATURES &ProcessorXSaveFe
     return S_OK;
 }
 
-HRESULT GetProcessorVednors(WHV_PROCESSOR_VENDOR &Vendors)
+HRESULT WINAPI
+GetProcessorVednors(_Out_ WHV_PROCESSOR_VENDOR &Vendors)
 {
     UINT32 WrittenSizeInBytes = 0;
     HRESULT Status = WHvGetCapability(WHvCapabilityCodeProcessorVendor,
@@ -114,7 +121,8 @@ HRESULT GetProcessorVednors(WHV_PROCESSOR_VENDOR &Vendors)
     return S_OK;
 }
 
-HRESULT CheckHyperVCapability()
+HRESULT WINAPI
+CheckHyperVCapability()
 {
     /*
         The WHvCapabilityCodeHypervisorPresent capability can be used to 
@@ -171,7 +179,8 @@ HRESULT CheckHyperVCapability()
     return S_OK;
 }
 
-INT main(INT argc, PCHAR argv[], PCHAR envp[])
+INT WINAPI
+main(INT argc, PCHAR argv[], PCHAR envp[])
 {
     spdlog::set_level(spdlog::level::level_enum::debug);
     spdlog::debug("----- RSC Project : learn HyperVisor -----");
@@ -182,7 +191,7 @@ INT main(INT argc, PCHAR argv[], PCHAR envp[])
     {
         spdlog::error("This machine does not support Hyper-V feature or \
          is disabled. The program is gonna be terminated");
-         return EXIT_SUCCESS;
+        return EXIT_SUCCESS;
     };
 
     return EXIT_SUCCESS;
