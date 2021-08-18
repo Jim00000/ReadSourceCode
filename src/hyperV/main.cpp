@@ -85,6 +85,20 @@ HRESULT GetProcessorFeatures(WHV_PROCESSOR_FEATURES &ProcessorFeatures)
     return S_OK;
 }
 
+HRESULT GetProcessorVednors(WHV_PROCESSOR_VENDOR &Vendors)
+{
+    UINT32 WrittenSizeInBytes = 0;
+    HRESULT Status = WHvGetCapability(WHvCapabilityCodeProcessorVendor,
+                                      &Vendors, sizeof(Vendors), &WrittenSizeInBytes);
+    if (Status != S_OK)
+    {
+        CheckLastError();
+        return S_FALSE;
+    }
+
+    return S_OK;
+}
+
 HRESULT CheckHyperVCapability()
 {
     /*
@@ -113,13 +127,20 @@ HRESULT CheckHyperVCapability()
     */
     WHV_EXTENDED_VM_EXITS ExtendedVmExits;
 
+    /* processor's vendor */
+    WHV_PROCESSOR_VENDOR Vendors = WHV_PROCESSOR_VENDOR::WHvProcessorVendorHygon;
+
     /* processor's features */
     WHV_PROCESSOR_FEATURES ProcessorFeatures;
 
     if (IsHypervisorPresent)
     {
+        /* Capabilities of the API implementation */
         GetHyperVFeatures(Features);
         GetExtendedVMExits(ExtendedVmExits);
+
+        /* Capabilities of the system's processor */
+        GetProcessorVednors(Vendors);
         GetProcessorFeatures(ProcessorFeatures);
     }
 
