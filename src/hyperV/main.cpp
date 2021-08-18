@@ -85,6 +85,20 @@ HRESULT GetProcessorFeatures(WHV_PROCESSOR_FEATURES &ProcessorFeatures)
     return S_OK;
 }
 
+HRESULT GetProcessorXsaveFeatures(WHV_PROCESSOR_XSAVE_FEATURES &ProcessorXSaveFeature)
+{
+    UINT32 WrittenSizeInBytes = 0;
+    HRESULT Status = WHvGetCapability(WHvCapabilityCodeProcessorXsaveFeatures,
+                                      &ProcessorXSaveFeature, sizeof(ProcessorXSaveFeature), &WrittenSizeInBytes);
+    if (Status != S_OK)
+    {
+        CheckLastError();
+        return S_FALSE;
+    }
+
+    return S_OK;
+}
+
 HRESULT GetProcessorVednors(WHV_PROCESSOR_VENDOR &Vendors)
 {
     UINT32 WrittenSizeInBytes = 0;
@@ -133,6 +147,14 @@ HRESULT CheckHyperVCapability()
     /* processor's features */
     WHV_PROCESSOR_FEATURES ProcessorFeatures;
 
+    /*  processor's XSAVE feature.
+        XSAVE - Save Processor Extended States.
+
+        Performs a full or partial save of processor state components to the XSAVE 
+        area located at the memory address specified by the destination operand.
+    */
+    WHV_PROCESSOR_XSAVE_FEATURES ProcessorXSaveFeature;
+
     if (IsHypervisorPresent)
     {
         /* Capabilities of the API implementation */
@@ -142,6 +164,7 @@ HRESULT CheckHyperVCapability()
         /* Capabilities of the system's processor */
         GetProcessorVednors(Vendors);
         GetProcessorFeatures(ProcessorFeatures);
+        GetProcessorXsaveFeatures(ProcessorXSaveFeature);
     }
 
     return S_OK;
