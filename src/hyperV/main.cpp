@@ -17,6 +17,19 @@
 
 #pragma comment(lib, "WinHvPlatform.lib")
 
+/*
+    References :
+    https://stackoverflow.com/questions/1113409/attribute-constructor-equivalent-in-vc
+    https://boringssl.googlesource.com/boringssl/+/refs/tags/version_for_cocoapods_4.0/crypto/crypto.c
+*/
+#pragma section(".CRT$XCU", read)
+static void __constructor(VOID)
+{
+    spdlog::set_level(spdlog::level::level_enum::debug);
+}
+
+__declspec(allocate(".CRT$XCU")) VOID (*__init_constructor)(VOID) = __constructor;
+
 VOID WINAPI
 CheckLastError()
 {
@@ -189,8 +202,7 @@ CheckHyperVCapability()
 INT WINAPI
 main(INT argc, PCHAR argv[], PCHAR envp[])
 {
-    spdlog::set_level(spdlog::level::level_enum::debug);
-    spdlog::debug("----- RSC Project : learn HyperVisor -----");
+    spdlog::info("----- RSC Project : learn HyperVisor -----");
 
     PCSTR ProgramFilename = ".exe";
 
