@@ -1,6 +1,13 @@
 // Documents :
 // https://docs.microsoft.com/en-us/virtualization/api/hypervisor-platform/funcs/whvgetcapability
 
+#if !defined(_WIN32) || !defined(_WIN64)
+    #error Your platform is not Windows
+#endif
+#if !defined(_MSC_VER)
+    #error Your compiler is not MSVC
+#endif
+
 #include <string>
 
 #include <Windows.h>
