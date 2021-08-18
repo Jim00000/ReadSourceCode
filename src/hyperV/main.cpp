@@ -1,11 +1,12 @@
 // Documents :
 // https://docs.microsoft.com/en-us/virtualization/api/hypervisor-platform/funcs/whvgetcapability
 
-#include <iostream>
 #include <string>
 
 #include <Windows.h>
 #include <WinHvPlatform.h>
+
+#include "spdlog/spdlog.h"
 
 #pragma comment(lib, "WinHvPlatform.lib")
 
@@ -23,7 +24,7 @@ VOID CheckLastError()
         NULL);
 
     std::string Msg(MsgBuf, WrittenBufferSize);
-    std::cerr << Msg << std::endl;
+    spdlog::error(Msg);
     LocalFree(MsgBuf);
 }
 
@@ -172,6 +173,17 @@ HRESULT CheckHyperVCapability()
 
 INT main(INT argc, PCHAR argv[], PCHAR envp[])
 {
-    PCSTR ProgramFilename = "test.exe";
-    CheckHyperVCapability();
+    spdlog::set_level(spdlog::level::level_enum::debug);
+    spdlog::debug("----- RSC Project : learn HyperVisor -----");
+
+    PCSTR ProgramFilename = ".exe";
+
+    if (CheckHyperVCapability() == S_FALSE)
+    {
+        spdlog::error("This machine does not support Hyper-V feature or \
+         is disabled. The program is gonna be terminated");
+         return EXIT_SUCCESS;
+    };
+
+    return EXIT_SUCCESS;
 }
