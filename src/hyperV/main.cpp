@@ -2,10 +2,10 @@
 // https://docs.microsoft.com/en-us/virtualization/api/hypervisor-platform/funcs/whvgetcapability
 
 #if !defined(_WIN32) || !defined(_WIN64)
-    #error Your platform is not Windows
+#error Your platform is not Windows
 #endif
 #if !defined(_MSC_VER)
-    #error Your compiler is not MSVC
+#error Your compiler is not MSVC
 #endif
 
 #include <string>
@@ -27,6 +27,33 @@ static void __constructor(VOID)
 }
 
 __declspec(allocate(".CRT$XCU")) VOID (*__init_constructor)(VOID) = __constructor;
+
+// The WHvCapabilityCodeFeatures capability is reserved for future
+// use, it returns 0.
+WHV_CAPABILITY_FEATURES Features;
+
+// For the WHvCapabilityCodeExtendedVmExits capability, the buffer
+// contains a bit field that specifies which additional exit reasons
+// are available that can be configured to cause the execution of a
+// virtual processor to be halted (see WHvRunVirtualProcessor).
+//
+// The values returned for the processor properties are based on the
+// capabilities of the physical processor on the system (i.e., they are
+// retrieved by querying the corresponding properties of the root partition.
+WHV_EXTENDED_VM_EXITS ExtendedVmExits;
+
+// processor's vendor
+WHV_PROCESSOR_VENDOR Vendors = WHV_PROCESSOR_VENDOR::WHvProcessorVendorHygon;
+
+// processor's features
+WHV_PROCESSOR_FEATURES ProcessorFeatures;
+
+// processor's XSAVE feature.
+// XSAVE - Save Processor Extended States.
+//
+// Performs a full or partial save of processor state components to the XSAVE
+// area located at the memory address specified by the destination operand.
+WHV_PROCESSOR_XSAVE_FEATURES ProcessorXSaveFeature;
 
 VOID WINAPI
 CheckLastError()
@@ -142,45 +169,12 @@ GetProcessorVednors(_Out_ WHV_PROCESSOR_VENDOR &Vendors)
 HRESULT WINAPI
 CheckHyperVCapability()
 {
-    /*
-        The WHvCapabilityCodeHypervisorPresent capability can be used to 
-        determine whether the Windows Hypervisor is running on a host and 
-        the functions of the platform APIs can be used to create VM 
-        partitions.
-    */
+
+    // The WHvCapabilityCodeHypervisorPresent capability can be used to
+    // determine whether the Windows Hypervisor is running on a host and
+    // the functions of the platform APIs can be used to create VM
+    // partitions.
     CONST BOOL IsHypervisorPresent = CheckHyperVPresent();
-
-    /*  
-        The WHvCapabilityCodeFeatures capability is reserved for future 
-        use, it returns 0. 
-    */
-    WHV_CAPABILITY_FEATURES Features;
-
-    /*
-        For the WHvCapabilityCodeExtendedVmExits capability, the buffer 
-        contains a bit field that specifies which additional exit reasons 
-        are available that can be configured to cause the execution of a 
-        virtual processor to be halted (see WHvRunVirtualProcessor).
-
-        The values returned for the processor properties are based on the 
-        capabilities of the physical processor on the system (i.e., they are 
-        retrieved by querying the corresponding properties of the root partition.
-    */
-    WHV_EXTENDED_VM_EXITS ExtendedVmExits;
-
-    /* processor's vendor */
-    WHV_PROCESSOR_VENDOR Vendors = WHV_PROCESSOR_VENDOR::WHvProcessorVendorHygon;
-
-    /* processor's features */
-    WHV_PROCESSOR_FEATURES ProcessorFeatures;
-
-    /*  processor's XSAVE feature.
-        XSAVE - Save Processor Extended States.
-
-        Performs a full or partial save of processor state components to the XSAVE 
-        area located at the memory address specified by the destination operand.
-    */
-    WHV_PROCESSOR_XSAVE_FEATURES ProcessorXSaveFeature;
 
     if (IsHypervisorPresent == FALSE)
     {
