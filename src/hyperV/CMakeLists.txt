@@ -1,4 +1,4 @@
-add_executable(hyperv main.cpp)
+add_executable(hyperv Main.cpp HyperVCapability.cpp Common.cpp)
 target_link_libraries(hyperv PRIVATE
     spdlog
 )
