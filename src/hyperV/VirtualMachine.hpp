@@ -20,17 +20,4 @@ namespace HyperV
         WHV_PARTITION_HANDLE hPartition;
     };
 
-    class VirtualMachineException : public std::exception
-    {
-    public:
-        VirtualMachineException() noexcept = delete;
-        VirtualMachineException(const std::string &) noexcept;
-        VirtualMachineException(std::string &&) noexcept;
-        VirtualMachineException(const VirtualMachineException &) noexcept = default;
-
-        const char *what() const noexcept override;
-
-    private:
-        std::string reason;
-    };
 }
