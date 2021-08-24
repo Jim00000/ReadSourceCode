@@ -77,18 +77,3 @@ void Capability::FillGetProcessorVednors(_Out_ WHV_PROCESSOR_VENDOR &Vendors)
     GetWin32HyperVCapability<WHvCapabilityCodeProcessorVendor>(Vendors);
     spdlog::info("Fill processor's vendor successfully");
 }
-
-CapabilityException::CapabilityException(const std::string &str) noexcept
-{
-    this->reason = str;
-}
-
-CapabilityException::CapabilityException(std::string &&str) noexcept
-{
-    this->reason = std::move(str);
-}
-
-const char *CapabilityException::what() const noexcept
-{
-    return this->reason.c_str();
-}

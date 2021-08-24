@@ -1,8 +1,6 @@
 #pragma once
 
-#include <Windows.h>
-#include <WinHvPlatform.h>
-#include <string>
+#include "Common.hpp"
 
 namespace HyperV
 {
@@ -57,17 +55,11 @@ namespace HyperV
         WHV_PROCESSOR_XSAVE_FEATURES ProcessorXSaveFeature;
     };
 
-    class CapabilityException : public std::exception
+    class CapabilityException : public VirtualMachineException
     {
     public:
-        CapabilityException() noexcept = delete;
+        CapabilityException() noexcept = default;
         CapabilityException(const std::string &) noexcept;
         CapabilityException(std::string &&) noexcept;
-        CapabilityException(const CapabilityException &) noexcept = default;
-
-        const char *what() const noexcept override;
-
-    private:
-        std::string reason;
     };
 }
