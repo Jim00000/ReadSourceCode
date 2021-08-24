@@ -6,11 +6,11 @@ using namespace HyperV;
 
 namespace
 {
-    template <typename BUF>
-    void GetWin32HyperVCapability(_In_ enum WHV_CAPABILITY_CODE code, _Out_ BUF &Buffer)
+    template <enum WHV_CAPABILITY_CODE CODE, typename BUFFER> 
+    inline void GetWin32HyperVCapability(_Out_ BUFFER &Buffer)
     {
         UINT32 WrittenSizeInBytes = 0;
-        HRESULT Status = WHvGetCapability(code, &Buffer, sizeof(Buffer),
+        const HRESULT Status = WHvGetCapability(CODE, &Buffer, sizeof(Buffer),
                                           &WrittenSizeInBytes);
         if (Status != S_OK)
             throw CapabilityException(GetWin32LastError());
@@ -50,31 +50,31 @@ const BOOL Capability::GetHyperVPresent()
 
 void Capability::FillFeatures(_Out_ WHV_CAPABILITY_FEATURES &Features)
 {
-    GetWin32HyperVCapability(WHvCapabilityCodeFeatures, Features);
+    GetWin32HyperVCapability<WHvCapabilityCodeFeatures>(Features);
     spdlog::info("Fill features successfully");
 }
 
 void Capability::FillExtendedVMExits(_Out_ WHV_EXTENDED_VM_EXITS &ExtendedVmExits)
 {
-    GetWin32HyperVCapability(WHvCapabilityCodeExtendedVmExits, ExtendedVmExits);
+    GetWin32HyperVCapability<WHvCapabilityCodeExtendedVmExits>(ExtendedVmExits);
     spdlog::info("Fill extended VM exits successfully");
 }
 
 void Capability::FillProcessorFeatures(_Out_ WHV_PROCESSOR_FEATURES &ProcessorFeatures)
 {
-    GetWin32HyperVCapability(WHvCapabilityCodeProcessorFeatures, ProcessorFeatures);
+    GetWin32HyperVCapability<WHvCapabilityCodeProcessorFeatures>(ProcessorFeatures);
     spdlog::info("Fill processor's feature successfully");
 }
 
 void Capability::FillProcessorXsaveFeatures(_Out_ WHV_PROCESSOR_XSAVE_FEATURES &ProcessorXSaveFeature)
 {
-    GetWin32HyperVCapability(WHvCapabilityCodeProcessorXsaveFeatures, ProcessorXSaveFeature);
+    GetWin32HyperVCapability<WHvCapabilityCodeProcessorXsaveFeatures>(ProcessorXSaveFeature);
     spdlog::info("Fill processor's xsave feature successfully");
 }
 
 void Capability::FillGetProcessorVednors(_Out_ WHV_PROCESSOR_VENDOR &Vendors)
 {
-    GetWin32HyperVCapability(WHvCapabilityCodeProcessorVendor, Vendors);
+    GetWin32HyperVCapability<WHvCapabilityCodeProcessorVendor>(Vendors);
     spdlog::info("Fill processor's vendor successfully");
 }
 
