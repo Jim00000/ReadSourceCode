@@ -2,8 +2,7 @@
 
 #include <string>
 
-std::string WINAPI
-GetWin32LastError()
+std::string WINAPI GetWin32LastError()
 {
     LPSTR ErrorMsgBuf;
 
