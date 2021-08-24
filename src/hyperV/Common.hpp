@@ -8,6 +8,7 @@
 #endif
 
 #include <Windows.h>
+#include <WinHvPlatform.h>
 #include <string>
 #include "spdlog/spdlog.h"
 
