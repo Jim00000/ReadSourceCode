@@ -26,12 +26,12 @@ try : hPartition(nullptr)
 }
 catch (const CreatePartitionFailedException &e)
 {
-    spdlog::critical(e.what());
+    spdlog::warn(e.what());
     throw VirtualMachineException("Creating Hyper-V Partition failed");
 }
 catch (...)
 {
-    spdlog::critical("Unidentified error got caught");
+    spdlog::warn("Unidentified error got caught");
     throw VirtualMachineException("Unknown error");
 }
 
