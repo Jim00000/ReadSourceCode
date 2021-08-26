@@ -6,18 +6,18 @@ using namespace HyperV;
 
 namespace
 {
-    template <enum WHV_CAPABILITY_CODE CODE, typename BUFFER> 
+    template <enum WHV_CAPABILITY_CODE CODE, typename BUFFER>
     inline void GetWin32HyperVCapability(_Out_ BUFFER &Buffer)
     {
         UINT32 WrittenSizeInBytes = 0;
         const HRESULT Status = WHvGetCapability(CODE, &Buffer, sizeof(Buffer),
-                                          &WrittenSizeInBytes);
+                                                &WrittenSizeInBytes);
         if (Status != S_OK)
             throw CapabilityException(GetWin32LastError());
     }
 }
 
-Capability::Capability()
+void Capability::CheckAvailability()
 {
     this->IsHyperVPresent = GetHyperVPresent();
     if (this->IsHyperVPresent)
@@ -32,8 +32,12 @@ Capability::Capability()
         }
         catch (const CapabilityException &e)
         {
-            spdlog::error(e.what());
+            spdlog::warn(e.what());
         }
+}
+
+Capability::Capability() : IsHyperVPresent{false}
+{
 }
 
 const BOOL Capability::GetHyperVPresent()

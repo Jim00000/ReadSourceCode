@@ -8,13 +8,16 @@ namespace HyperV
     {
     public:
         Capability();
-        Capability(const Capability &) = delete;
-        Capability &operator=(const Capability &) = delete;
-        Capability(const Capability &&) = delete;
-        Capability &operator=(Capability &&) = delete;
+        Capability(const Capability &) = default;
+        Capability &operator=(const Capability &) = default;
+        Capability(Capability &&) = default;
+        Capability &operator=(Capability &&) = default;
 
     public:
         auto &GetExtendedVmExits() const { return this->ExtendedVmExits; }
+
+    public:
+        void CheckAvailability();
 
     private:
         const BOOL GetHyperVPresent();
