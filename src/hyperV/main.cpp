@@ -3,6 +3,7 @@
 
 #include "Common.hpp"
 #include "HyperVCapability.hpp"
+#include "VirtualMachine.hpp"
 
 #pragma comment(lib, "WinHvPlatform.lib")
 
@@ -28,15 +29,17 @@ try
     PCSTR ProgramFilename = ".exe";
 
     HyperV::Capability Cap;
+    Cap.CheckAvailability();
 
-    // Check VM-Exits
-    if(Cap.GetExtendedVmExits().X64CpuidExit)
-    {
-        
-    }
+    HyperV::VirtualMachine VM {Cap};
+    VM.Initialize();
 
     spdlog::info("----- Program terminates -----");
     return EXIT_SUCCESS;
+}
+catch (HyperV::VirtualMachineException& e)
+{
+    spdlog::error(e.what());
 }
 catch (...)
 {
