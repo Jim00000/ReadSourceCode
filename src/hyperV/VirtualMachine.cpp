@@ -15,6 +15,7 @@ namespace
     };
 
     using CreatePartitionFailedException = typename VersatileException<VirtualMachineException, 1>;
+    using DeletePartitionFailedException = typename VersatileException<VirtualMachineException, 2>;
 }
 
 VirtualMachine::VirtualMachine()
@@ -35,6 +36,25 @@ catch (...)
     throw VirtualMachineException("Unknown error");
 }
 
-VirtualMachine::~VirtualMachine()
+VirtualMachine::~VirtualMachine() noexcept
 {
+    try
+    {
+        if (this->hPartition != nullptr)
+        {
+            const HRESULT Status = WHvDeletePartition(&this->hPartition);
+            if (Status != S_OK)
+            {
+                throw DeletePartitionFailedException(GetWin32LastError());
+            }
+        }
+    }
+    catch (const DeletePartitionFailedException &e)
+    {
+        spdlog::warn(e.what());
+    }
+    catch (...)
+    {
+        spdlog::warn("Unidentified error got caught");
+    }
 }

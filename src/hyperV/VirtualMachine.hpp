@@ -10,7 +10,7 @@ namespace HyperV
     {
     public:
         VirtualMachine();
-        virtual ~VirtualMachine();
+        virtual ~VirtualMachine() noexcept;
         VirtualMachine(const VirtualMachine &);
         VirtualMachine &operator=(const VirtualMachine &);
         VirtualMachine(const VirtualMachine &&);
