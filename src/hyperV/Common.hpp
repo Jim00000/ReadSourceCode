@@ -9,7 +9,9 @@
 
 #include <Windows.h>
 #include <WinHvPlatform.h>
+#include <concepts>
 #include <string>
+#include <type_traits>
 #include "spdlog/spdlog.h"
 
 std::string WINAPI GetWin32LastError();
@@ -26,6 +28,7 @@ namespace HyperV
     };
 
     template <typename EXCEPTIONBASE, size_t SERIAL>
+    requires std::is_class_v<EXCEPTIONBASE> && std::is_base_of_v<std::exception, EXCEPTIONBASE>
     class VersatileException : public EXCEPTIONBASE
     {
     public:
