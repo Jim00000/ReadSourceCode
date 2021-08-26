@@ -20,7 +20,7 @@ namespace
 VirtualMachine::VirtualMachine()
 try : hPartition(nullptr)
 {
-    HRESULT Status = WHvCreatePartition(&hPartition);
+    const HRESULT Status = WHvCreatePartition(&hPartition);
     if (Status != S_OK)
         throw CreatePartitionFailedException(GetWin32LastError());
 }
