@@ -15,6 +15,7 @@ namespace HyperV
 
     public:
         auto &GetExtendedVmExits() const { return this->ExtendedVmExits; }
+        auto IsInitialized() const noexcept { return this->Initialized; }
 
     public:
         void CheckAvailability();
@@ -29,6 +30,7 @@ namespace HyperV
 
     private:
         bool IsHyperVPresent;
+        bool Initialized;
 
         // The WHvCapabilityCodeFeatures capability is reserved for future
         // use, it returns 0.

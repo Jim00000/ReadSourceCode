@@ -19,24 +19,31 @@ namespace
 
 void Capability::CheckAvailability()
 {
-    this->IsHyperVPresent = GetHyperVPresent();
-    if (this->IsHyperVPresent)
-        try
-        {
-            spdlog::info("Hyper-V is present");
-            FillFeatures(this->Features);
-            FillExtendedVMExits(this->ExtendedVmExits);
-            FillProcessorFeatures(this->ProcessorFeatures);
-            FillProcessorXsaveFeatures(this->ProcessorXSaveFeature);
-            FillGetProcessorVednors(this->Vendors);
-        }
-        catch (const CapabilityException &e)
-        {
-            spdlog::warn(e.what());
-        }
+    if (Initialized == false)
+    {
+        this->IsHyperVPresent = GetHyperVPresent();
+        if (this->IsHyperVPresent)
+            try
+            {
+                spdlog::info("Hyper-V is present");
+                FillFeatures(this->Features);
+                FillExtendedVMExits(this->ExtendedVmExits);
+                FillProcessorFeatures(this->ProcessorFeatures);
+                FillProcessorXsaveFeatures(this->ProcessorXSaveFeature);
+                FillGetProcessorVednors(this->Vendors);
+            }
+            catch (const CapabilityException &e)
+            {
+                spdlog::warn(e.what());
+            }
+    }
+    else
+    {
+        spdlog::info("Availability of Hyper-V has been checked. Bypass duplicate check process");
+    }
 }
 
-Capability::Capability() : IsHyperVPresent{false}
+Capability::Capability() : IsHyperVPresent{false}, Initialized{false}
 {
 }
 
