@@ -19,18 +19,18 @@ namespace
 
 void Capability::CheckAvailability()
 {
-    if (Initialized == false)
+    if (this->mInitialized == false)
     {
-        this->IsHyperVPresent = GetHyperVPresent();
-        if (this->IsHyperVPresent)
+        this->mIsHyperVPresent = GetHyperVPresent();
+        if (this->mIsHyperVPresent)
             try
             {
                 spdlog::info("Hyper-V is present");
-                FillFeatures(this->Features);
-                FillExtendedVMExits(this->ExtendedVmExits);
-                FillProcessorFeatures(this->ProcessorFeatures);
-                FillProcessorXsaveFeatures(this->ProcessorXSaveFeature);
-                FillGetProcessorVednors(this->Vendors);
+                FillFeatures(this->mFeatures);
+                FillExtendedVMExits(this->mExtendedVmExits);
+                FillProcessorFeatures(this->mProcessorFeatures);
+                FillProcessorXsaveFeatures(this->mProcessorXSaveFeature);
+                FillGetProcessorVednors(this->mVendors);
             }
             catch (const CapabilityException &e)
             {
@@ -43,7 +43,7 @@ void Capability::CheckAvailability()
     }
 }
 
-Capability::Capability() : IsHyperVPresent{false}, Initialized{false}
+Capability::Capability() : mIsHyperVPresent{false}, mInitialized{false}
 {
 }
 

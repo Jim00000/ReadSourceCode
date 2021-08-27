@@ -14,8 +14,9 @@ namespace HyperV
         Capability &operator=(Capability &&) = default;
 
     public:
-        auto &GetExtendedVmExits() const { return this->ExtendedVmExits; }
-        auto IsInitialized() const noexcept { return this->Initialized; }
+        auto &GetExtendedVmExits() const noexcept { return this->mExtendedVmExits; }
+        auto IsInitialized() const noexcept -> const bool { return this->mInitialized; }
+        auto IsHyperVPresent() const noexcept -> const bool { return this->mIsHyperVPresent; }
 
     public:
         void CheckAvailability();
@@ -29,12 +30,12 @@ namespace HyperV
         void FillGetProcessorVednors(_Out_ WHV_PROCESSOR_VENDOR &);
 
     private:
-        bool IsHyperVPresent;
-        bool Initialized;
+        bool mIsHyperVPresent;
+        bool mInitialized;
 
         // The WHvCapabilityCodeFeatures capability is reserved for future
         // use, it returns 0.
-        WHV_CAPABILITY_FEATURES Features;
+        WHV_CAPABILITY_FEATURES mFeatures;
 
         // For the WHvCapabilityCodeExtendedVmExits capability, the buffer
         // contains a bit field that specifies which additional exit reasons
@@ -44,20 +45,20 @@ namespace HyperV
         // The values returned for the processor properties are based on the
         // capabilities of the physical processor on the system (i.e., they are
         // retrieved by querying the corresponding properties of the root partition.
-        WHV_EXTENDED_VM_EXITS ExtendedVmExits;
+        WHV_EXTENDED_VM_EXITS mExtendedVmExits;
 
         // processor's vendor
-        WHV_PROCESSOR_VENDOR Vendors = WHV_PROCESSOR_VENDOR::WHvProcessorVendorHygon;
+        WHV_PROCESSOR_VENDOR mVendors = WHV_PROCESSOR_VENDOR::WHvProcessorVendorHygon;
 
         // processor's features
-        WHV_PROCESSOR_FEATURES ProcessorFeatures;
+        WHV_PROCESSOR_FEATURES mProcessorFeatures;
 
         // processor's XSAVE feature.
         // XSAVE - Save Processor Extended States.
         //
         // Performs a full or partial save of processor state components to the XSAVE
         // area located at the memory address specified by the destination operand.
-        WHV_PROCESSOR_XSAVE_FEATURES ProcessorXSaveFeature;
+        WHV_PROCESSOR_XSAVE_FEATURES mProcessorXSaveFeature;
     };
 
     class CapabilityException : public VirtualMachineException

@@ -16,6 +16,10 @@ VirtualMachine::VirtualMachine() noexcept : hPartition{nullptr}, Cap{}
 
 VirtualMachine::VirtualMachine(Capability& capability) noexcept : hPartition{nullptr}, Cap{capability}
 {
+    if(Cap.IsInitialized() == false)
+    {
+        Cap.CheckAvailability();
+    }
 }
 
 VirtualMachine::~VirtualMachine() noexcept
