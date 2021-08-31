@@ -5,9 +5,9 @@ using namespace HyperV;
 
 namespace
 {
-    using CreatePartitionFailedException = typename VersatileException<VirtualMachineException, 1>;
-    using DeletePartitionFailedException = typename VersatileException<VirtualMachineException, 2>;
-    using SetPartitionPropertyFailedExecption = typename VersatileException<VirtualMachineException, 3>;
+    using CreatePartitionFailedException = typename VersatileException<VirtualMachineException, ExceptionIdentifier::CreatePartitionFailed>;
+    using DeletePartitionFailedException = typename VersatileException<VirtualMachineException, ExceptionIdentifier::DeletePartitionFailed>;
+    using SetPartitionPropertyFailedExecption = typename VersatileException<VirtualMachineException, ExceptionIdentifier::SetPartitionPropertyFailed>;
 }
 
 const uint32_t VirtualMachine::ProcessorCount = 1;

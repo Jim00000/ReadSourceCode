@@ -27,13 +27,19 @@ namespace HyperV
         VirtualMachineException(const VirtualMachineException &) noexcept = default;
     };
 
-    template <typename EXCEPTIONBASE, size_t SERIAL>
+    enum class ExceptionIdentifier {
+        CreatePartitionFailed,
+        DeletePartitionFailed,
+        SetPartitionPropertyFailed,
+    };
+
+    template <typename EXCEPTIONBASE, ExceptionIdentifier EID>
     requires std::is_class_v<EXCEPTIONBASE> && std::is_base_of_v<std::exception, EXCEPTIONBASE>
     class VersatileException : public EXCEPTIONBASE
     {
     public:
-        VersatileException<EXCEPTIONBASE, SERIAL>() noexcept = default;
-        VersatileException<EXCEPTIONBASE, SERIAL>(const std::string &str) noexcept : EXCEPTIONBASE(str) {}
-        VersatileException<EXCEPTIONBASE, SERIAL>(std::string &&str) noexcept : EXCEPTIONBASE(std::move(str)) {}
+        VersatileException<EXCEPTIONBASE, EID>() noexcept = default;
+        VersatileException<EXCEPTIONBASE, EID>(const std::string &str) noexcept : EXCEPTIONBASE(str) {}
+        VersatileException<EXCEPTIONBASE, EID>(std::string &&str) noexcept : EXCEPTIONBASE(std::move(str)) {}
     };
 }
