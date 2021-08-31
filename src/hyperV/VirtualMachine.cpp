@@ -7,16 +7,19 @@ namespace
 {
     using CreatePartitionFailedException = typename VersatileException<VirtualMachineException, 1>;
     using DeletePartitionFailedException = typename VersatileException<VirtualMachineException, 2>;
+    using SetPartitionPropertyFailedExecption = typename VersatileException<VirtualMachineException, 3>;
 }
+
+const uint32_t VirtualMachine::ProcessorCount = 1;
 
 VirtualMachine::VirtualMachine() noexcept : hPartition{nullptr}, Cap{}
 {
     Cap.CheckAvailability();
 }
 
-VirtualMachine::VirtualMachine(Capability& capability) noexcept : hPartition{nullptr}, Cap{capability}
+VirtualMachine::VirtualMachine(Capability &capability) noexcept : hPartition{nullptr}, Cap{capability}
 {
-    if(Cap.IsInitialized() == false)
+    if (Cap.IsInitialized() == false)
     {
         Cap.CheckAvailability();
     }
@@ -48,18 +51,31 @@ VirtualMachine::~VirtualMachine() noexcept
 void VirtualMachine::Initialize()
 try
 {
-    const HRESULT Status = WHvCreatePartition(&hPartition);
+    HRESULT Status = WHvCreatePartition(&hPartition);
 
     if (Status != S_OK)
         throw CreatePartitionFailedException(GetWin32LastError());
 
     spdlog::info("Create Partition successfully");
+
+    Status = WHvSetPartitionProperty(hPartition, WHvPartitionPropertyCodeProcessorCount, &ProcessorCount, sizeof(ProcessorCount));
+
+    if (Status != S_OK)
+        throw SetPartitionPropertyFailedExecption(GetWin32LastError());
+
+    spdlog::info("Set Partition Property successfully. ProcessorCount : {}.", ProcessorCount);
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
 {
     spdlog::warn(e.what());
     throw VirtualMachineException("Creating Hyper-V Partition failed");
+}
+catch (const SetPartitionPropertyFailedExecption &e)
+{
+    spdlog::warn(e.what());
+    throw VirtualMachineException("Set Partition Property failed");
 }
 catch (...)
 {

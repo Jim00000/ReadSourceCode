@@ -24,6 +24,7 @@ namespace HyperV
     private:
         WHV_PARTITION_HANDLE hPartition;
         Capability Cap;
+        const static uint32_t ProcessorCount;
     };
 
 }
