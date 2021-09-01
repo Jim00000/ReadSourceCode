@@ -36,6 +36,7 @@ void Capability::CheckAvailability()
             {
                 spdlog::warn(e.what());
             }
+        this->mInitialized = true;
     }
     else
     {
