@@ -66,6 +66,13 @@ try
 
     spdlog::info("Set Partition Property successfully. ProcessorCount : {}.", ProcessorCount);
 
+    Status = WHvSetupPartition(hPartition);
+
+    if (Status != S_OK)
+        throw SetupPartitionFailedException(GetWin32LastError());
+
+    spdlog::info("Setup Partition successfully.");
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
@@ -77,6 +84,11 @@ catch (const SetPartitionPropertyFailedExecption &e)
 {
     spdlog::warn(e.what());
     throw VirtualMachineException("Set Partition Property failed");
+}
+catch(const SetupPartitionFailedException& e)
+{
+    spdlog::warn(e.what());
+    throw VirtualMachineException("Setup Hyper-V partition failed");
 }
 catch (...)
 {
