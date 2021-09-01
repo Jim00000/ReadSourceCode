@@ -27,10 +27,12 @@ namespace HyperV
         VirtualMachineException(const VirtualMachineException &) noexcept = default;
     };
 
-    enum class ExceptionIdentifier {
+    enum class ExceptionIdentifier
+    {
         CreatePartitionFailed,
         DeletePartitionFailed,
         SetPartitionPropertyFailed,
+        SetupPartitionFailed,
     };
 
     template <typename EXCEPTIONBASE, ExceptionIdentifier EID>
