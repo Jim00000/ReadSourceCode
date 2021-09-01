@@ -44,4 +44,7 @@ namespace HyperV
         VersatileException<EXCEPTIONBASE, EID>(const std::string &str) noexcept : EXCEPTIONBASE(str) {}
         VersatileException<EXCEPTIONBASE, EID>(std::string &&str) noexcept : EXCEPTIONBASE(std::move(str)) {}
     };
+
+    template <ExceptionIdentifier EID>
+    using VMException = VersatileException<VirtualMachineException, EID>;
 }
