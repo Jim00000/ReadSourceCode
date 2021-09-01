@@ -22,8 +22,11 @@ namespace HyperV
         void Initialize();
 
     private:
+        LPVOID VirtualMemory;
         WHV_PARTITION_HANDLE hPartition;
         Capability Cap;
+    
+    private:
         const static uint32_t ProcessorCount;
     };
 

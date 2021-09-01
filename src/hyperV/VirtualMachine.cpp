@@ -9,16 +9,17 @@ namespace
     using DeletePartitionFailedException = typename VMException<ExceptionIdentifier::DeletePartitionFailed>;
     using SetPartitionPropertyFailedExecption = typename VMException<ExceptionIdentifier::SetPartitionPropertyFailed>;
     using SetupPartitionFailedException = typename VMException<ExceptionIdentifier::SetupPartitionFailed>;
+    using AllocateVMMemoryFailed = typename VMException<ExceptionIdentifier::AllocateVMMemoryFailed>;
 }
 
 const uint32_t VirtualMachine::ProcessorCount = 1;
 
-VirtualMachine::VirtualMachine() noexcept : hPartition{nullptr}, Cap{}
+VirtualMachine::VirtualMachine() noexcept : VirtualMemory{nullptr}, hPartition{nullptr}, Cap{}
 {
     Cap.CheckAvailability();
 }
 
-VirtualMachine::VirtualMachine(Capability &capability) noexcept : hPartition{nullptr}, Cap{capability}
+VirtualMachine::VirtualMachine(Capability &capability) noexcept : VirtualMemory{nullptr}, hPartition{nullptr}, Cap{capability}
 {
     if (Cap.IsInitialized() == false)
     {
@@ -73,6 +74,13 @@ try
 
     spdlog::info("Setup Partition successfully.");
 
+    VirtualMemory = VirtualAlloc(NULL, 0x2'000'000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+    if (VirtualMemory == NULL)
+        throw AllocateVMMemoryFailed(GetWin32LastError());
+
+        spdlog::info("Allocate Memory for VM successfully.");
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
@@ -85,10 +93,15 @@ catch (const SetPartitionPropertyFailedExecption &e)
     spdlog::warn(e.what());
     throw VirtualMachineException("Set Partition Property failed");
 }
-catch(const SetupPartitionFailedException& e)
+catch (const SetupPartitionFailedException &e)
 {
     spdlog::warn(e.what());
     throw VirtualMachineException("Setup Hyper-V partition failed");
+}
+catch (const AllocateVMMemoryFailed &e)
+{
+    spdlog::error(e.what());
+    throw VirtualMachineException("Allocate memory for VM failed");
 }
 catch (...)
 {

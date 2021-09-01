@@ -33,6 +33,7 @@ namespace HyperV
         DeletePartitionFailed,
         SetPartitionPropertyFailed,
         SetupPartitionFailed,
+        AllocateVMMemoryFailed,
     };
 
     template <typename EXCEPTIONBASE, ExceptionIdentifier EID>
