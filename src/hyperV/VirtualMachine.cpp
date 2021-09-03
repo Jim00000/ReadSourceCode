@@ -84,6 +84,8 @@ try
 
     SecureZeroMemory(VirtualMemory, GuestMemorySize);
 
+    spdlog::info("Fill guest memory with zeros");
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
