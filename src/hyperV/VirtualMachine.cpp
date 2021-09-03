@@ -9,7 +9,7 @@ namespace
     using DeletePartitionFailedException = typename VMException<ExceptionIdentifier::DeletePartitionFailed>;
     using SetPartitionPropertyFailedExecption = typename VMException<ExceptionIdentifier::SetPartitionPropertyFailed>;
     using SetupPartitionFailedException = typename VMException<ExceptionIdentifier::SetupPartitionFailed>;
-    using AllocateVMMemoryFailed = typename VMException<ExceptionIdentifier::AllocateVMMemoryFailed>;
+    using AllocateVMMemoryFailedException = typename VMException<ExceptionIdentifier::AllocateVMMemoryFailed>;
     using MapGpaRangeFailedException = typename VMException<ExceptionIdentifier::MapGpaRangeFailed>;
 }
 
@@ -79,7 +79,7 @@ try
     VirtualMemory = VirtualAlloc(NULL, GuestMemorySize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
     if (VirtualMemory == NULL)
-        throw AllocateVMMemoryFailed(GetWin32LastError());
+        throw AllocateVMMemoryFailedException(GetWin32LastError());
 
     spdlog::info("Allocate Memory for VM successfully.");
 
@@ -109,7 +109,7 @@ catch (const SetupPartitionFailedException &e)
     spdlog::warn(e.what());
     throw VirtualMachineException("Setup Hyper-V partition failed");
 }
-catch (const AllocateVMMemoryFailed &e)
+catch (const AllocateVMMemoryFailedException &e)
 {
     spdlog::error(e.what());
     throw VirtualMachineException("Allocate memory for VM failed");
