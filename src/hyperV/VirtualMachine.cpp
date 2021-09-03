@@ -79,7 +79,7 @@ try
     if (VirtualMemory == NULL)
         throw AllocateVMMemoryFailed(GetWin32LastError());
 
-        spdlog::info("Allocate Memory for VM successfully.");
+    spdlog::info("Allocate Memory for VM successfully.");
 
     return;
 }
