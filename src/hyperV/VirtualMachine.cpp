@@ -13,6 +13,7 @@ namespace
 }
 
 const uint32_t VirtualMachine::ProcessorCount = 1;
+const SIZE_T VirtualMachine::GuestMemorySize = 0x2'000'000; // 2MB
 
 VirtualMachine::VirtualMachine() noexcept : VirtualMemory{nullptr}, hPartition{nullptr}, Cap{}
 {
@@ -74,7 +75,7 @@ try
 
     spdlog::info("Setup Partition successfully.");
 
-    VirtualMemory = VirtualAlloc(NULL, 0x2'000'000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    VirtualMemory = VirtualAlloc(NULL, GuestMemorySize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
     if (VirtualMemory == NULL)
         throw AllocateVMMemoryFailed(GetWin32LastError());

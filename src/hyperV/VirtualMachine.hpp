@@ -28,6 +28,7 @@ namespace HyperV
     
     private:
         const static uint32_t ProcessorCount;
+        const static SIZE_T GuestMemorySize;
     };
 
 }
