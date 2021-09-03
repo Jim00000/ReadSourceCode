@@ -92,6 +92,8 @@ try
     if(Status != S_OK)
         throw MapGpaRangeFailedException(GetWin32LastError());
 
+    spdlog::info("Creating a memory mapping for VM successfully.");
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
