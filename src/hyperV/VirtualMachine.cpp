@@ -10,6 +10,7 @@ namespace
     using SetPartitionPropertyFailedExecption = typename VMException<ExceptionIdentifier::SetPartitionPropertyFailed>;
     using SetupPartitionFailedException = typename VMException<ExceptionIdentifier::SetupPartitionFailed>;
     using AllocateVMMemoryFailed = typename VMException<ExceptionIdentifier::AllocateVMMemoryFailed>;
+    using MapGpaRangeFailedException = typename VMException<ExceptionIdentifier::MapGpaRangeFailed>;
 }
 
 const uint32_t VirtualMachine::ProcessorCount = 1;
@@ -86,6 +87,11 @@ try
 
     spdlog::info("Fill guest memory with zeros");
 
+    Status = WHvMapGpaRange(hPartition, VirtualMemory, 0, GuestMemorySize, WHvMapGpaRangeFlagRead | WHvMapGpaRangeFlagWrite | WHvMapGpaRangeFlagExecute);
+
+    if(Status != S_OK)
+        throw MapGpaRangeFailedException(GetWin32LastError());
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
@@ -107,6 +113,11 @@ catch (const AllocateVMMemoryFailed &e)
 {
     spdlog::error(e.what());
     throw VirtualMachineException("Allocate memory for VM failed");
+}
+catch (const MapGpaRangeFailedException&e)
+{
+    spdlog::error(e.what());
+    throw VirtualMachineException("Mapping memory for VM failed");
 }
 catch (...)
 {
