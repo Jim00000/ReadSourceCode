@@ -82,6 +82,8 @@ try
 
     spdlog::info("Allocate Memory for VM successfully.");
 
+    SecureZeroMemory(VirtualMemory, GuestMemorySize);
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
