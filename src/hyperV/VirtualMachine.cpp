@@ -87,6 +87,12 @@ try
 
     spdlog::info("Fill guest memory with zeros");
 
+    // Host Physical Address (HPA): the native physical address space.
+    // Guest Physical Address (GPA): the guest physical address space from a virtual
+    // machine. GPA to HPA transition is usually based on an MMU-like hardware 
+    // module (EPT in X86), and is associated with a page table.
+    //
+    // Reference: https://projectacrn.github.io/latest/developer-guides/hld/hv-memmgt.html
     Status = WHvMapGpaRange(hPartition, VirtualMemory, 0, GuestMemorySize, WHvMapGpaRangeFlagRead | WHvMapGpaRangeFlagWrite | WHvMapGpaRangeFlagExecute);
 
     if(Status != S_OK)
