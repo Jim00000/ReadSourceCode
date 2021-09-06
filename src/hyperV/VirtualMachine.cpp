@@ -96,7 +96,7 @@ try
     // Reference: https://projectacrn.github.io/latest/developer-guides/hld/hv-memmgt.html
     Status = WHvMapGpaRange(hPartition, VirtualMemory, 0, GuestMemorySize, WHvMapGpaRangeFlagRead | WHvMapGpaRangeFlagWrite | WHvMapGpaRangeFlagExecute);
 
-    if(Status != S_OK)
+    if (Status != S_OK)
         throw MapGpaRangeFailedException(GetWin32LastError());
 
     spdlog::info("Creating a memory mapping for VM successfully.");
@@ -130,7 +130,7 @@ catch (const AllocateVMMemoryFailedException &e)
     spdlog::error(e.what());
     throw VirtualMachineException("Allocate memory for VM failed");
 }
-catch (const MapGpaRangeFailedException&e)
+catch (const MapGpaRangeFailedException &e)
 {
     spdlog::error(e.what());
     throw VirtualMachineException("Mapping memory for VM failed");
