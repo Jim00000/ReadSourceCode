@@ -11,6 +11,7 @@ namespace
     using SetupPartitionFailedException = typename VMException<ExceptionIdentifier::SetupPartitionFailed>;
     using AllocateVMMemoryFailedException = typename VMException<ExceptionIdentifier::AllocateVMMemoryFailed>;
     using MapGpaRangeFailedException = typename VMException<ExceptionIdentifier::MapGpaRangeFailed>;
+    using CreateVirtualProcessorFailedException = typename VMException<ExceptionIdentifier::CreateVirtualProcessorFailed>;
 }
 
 const uint32_t VirtualMachine::ProcessorCount = 1;
@@ -89,7 +90,7 @@ try
 
     // Host Physical Address (HPA): the native physical address space.
     // Guest Physical Address (GPA): the guest physical address space from a virtual
-    // machine. GPA to HPA transition is usually based on an MMU-like hardware 
+    // machine. GPA to HPA transition is usually based on an MMU-like hardware
     // module (EPT in X86), and is associated with a page table.
     //
     // Reference: https://projectacrn.github.io/latest/developer-guides/hld/hv-memmgt.html
@@ -99,6 +100,13 @@ try
         throw MapGpaRangeFailedException(GetWin32LastError());
 
     spdlog::info("Creating a memory mapping for VM successfully.");
+
+    Status = WHvCreateVirtualProcessor(hPartition, 0, 0);
+
+    if (Status != S_OK)
+        throw CreateVirtualProcessorFailedException(GetWin32LastError());
+
+    spdlog::info("Creating a virtual processor successfully");
 
     return;
 }
@@ -126,6 +134,11 @@ catch (const MapGpaRangeFailedException&e)
 {
     spdlog::error(e.what());
     throw VirtualMachineException("Mapping memory for VM failed");
+}
+catch (const CreateVirtualProcessorFailedException &e)
+{
+    spdlog::error(e.what());
+    throw VirtualMachineException("Creating virtual processor failed");
 }
 catch (...)
 {

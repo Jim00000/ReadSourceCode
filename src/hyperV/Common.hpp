@@ -35,6 +35,7 @@ namespace HyperV
         SetupPartitionFailed,
         AllocateVMMemoryFailed,
         MapGpaRangeFailed,
+        CreateVirtualProcessorFailed,
     };
 
     template <typename EXCEPTIONBASE, ExceptionIdentifier EID>
