@@ -3,7 +3,6 @@ add_executable(hyperv
     HyperVCapability.cpp 
     VirtualMachine.cpp
     Common.cpp 
-    CapabilityException.cpp
     VirtualMachineException.cpp
     Registers.cpp
 )

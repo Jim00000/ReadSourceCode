@@ -29,6 +29,10 @@ namespace HyperV
 
     enum class ExceptionIdentifier
     {
+        // Hyper-V Capability
+        HyperVCapability,
+
+        // Virtual Machine
         CreatePartitionFailed,
         DeletePartitionFailed,
         SetPartitionPropertyFailed,

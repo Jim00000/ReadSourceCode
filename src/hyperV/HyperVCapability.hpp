@@ -61,11 +61,5 @@ namespace HyperV
         WHV_PROCESSOR_XSAVE_FEATURES mProcessorXSaveFeature;
     };
 
-    class CapabilityException : public VirtualMachineException
-    {
-    public:
-        CapabilityException() noexcept = default;
-        CapabilityException(const std::string &) noexcept;
-        CapabilityException(std::string &&) noexcept;
-    };
+    using CapabilityException = typename VMException<ExceptionIdentifier::HyperVCapability>;
 }
