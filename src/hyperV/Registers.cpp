@@ -1,10 +1,11 @@
+#include <array>
 #include "Registers.hpp"
 
 using namespace HyperV;
 
 auto Registers::GeneralPurpose() const noexcept
 {
-    constexpr static WHV_REGISTER_NAME GeneralPurpose[] = {
+    constexpr static std::array GeneralPurpose = {
         WHvX64RegisterRax,
         WHvX64RegisterRcx,
         WHvX64RegisterRdx,
@@ -22,6 +23,8 @@ auto Registers::GeneralPurpose() const noexcept
         WHvX64RegisterR14,
         WHvX64RegisterR15,
         WHvX64RegisterRip,
-        WHvX64RegisterRflags};
+        WHvX64RegisterRflags
+    };
+
     return GeneralPurpose;
 }
