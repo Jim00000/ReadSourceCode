@@ -5,6 +5,7 @@ add_executable(hyperv
     Common.cpp 
     CapabilityException.cpp
     VirtualMachineException.cpp
+    Registers.cpp
 )
 
 target_link_libraries(hyperv PRIVATE
