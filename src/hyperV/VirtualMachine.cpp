@@ -12,6 +12,7 @@ namespace
     using AllocateVMMemoryFailedException = typename VMException<ExceptionIdentifier::AllocateVMMemoryFailed>;
     using MapGpaRangeFailedException = typename VMException<ExceptionIdentifier::MapGpaRangeFailed>;
     using CreateVirtualProcessorFailedException = typename VMException<ExceptionIdentifier::CreateVirtualProcessorFailed>;
+    using SetVirtualProcessorRegisterGeneralPurposeFailedException = typename VMException<ExceptionIdentifier::SetVirtualProcessorGeneralPurposeRegisterFailed>;
 }
 
 const uint32_t VirtualMachine::ProcessorCount = 1;
@@ -108,6 +109,8 @@ try
 
     spdlog::info("Creating a virtual processor successfully");
 
+    ConfigRegisters();
+
     return;
 }
 catch (const CreatePartitionFailedException &e)
@@ -143,5 +146,24 @@ catch (const CreateVirtualProcessorFailedException &e)
 catch (...)
 {
     spdlog::warn("Unidentified error got caught");
+    throw VirtualMachineException("Unknown error");
+}
+
+void VirtualMachine::ConfigRegisters()
+try
+{
+    HRESULT Status = WHvSetVirtualProcessorRegisters(hPartition, 0, Regs.GeneralPurpose().data(), Regs.GeneralPurpose().size(), Regs.GeneralPurposeInitValue().data());
+
+    if (Status != S_OK)
+        throw SetVirtualProcessorRegisterGeneralPurposeFailedException(GetWin32LastError());
+}
+catch (SetVirtualProcessorRegisterGeneralPurposeFailedException &e)
+{
+    spdlog::error(e.what());
+    throw VirtualMachineException("Set virtual processor general purpose registers failed");
+}
+catch (...)
+{
+    spdlog::error("Unidentified error got caught");
     throw VirtualMachineException("Unknown error");
 }
